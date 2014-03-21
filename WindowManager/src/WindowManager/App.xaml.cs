@@ -2,6 +2,7 @@
 using System.Deployment.Application;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
