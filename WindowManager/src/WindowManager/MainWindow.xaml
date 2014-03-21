@@ -1,6 +1,5 @@
-﻿<Ribbon:RibbonWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<RibbonWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:WindowManager="clr-namespace:WindowManager"
-                     xmlns:Ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:Controls="clr-namespace:WindowManager.Controls"
@@ -8,20 +7,20 @@
                      xmlns:TaskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
                      xmlns:Settings="clr-namespace:WindowManager.Core.Settings" Title="WindowManager" Height="767" Width="737" Icon="/Assets/Logo.ico" StateChanged="RibbonWindowStateChanged">
 
-    <Ribbon:RibbonWindow.Resources>
+    <RibbonWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Generic.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Ribbon:RibbonWindow.Resources>
+    </RibbonWindow.Resources>
 
-    <Ribbon:RibbonWindow.CommandBindings>
+    <RibbonWindow.CommandBindings>
         <CommandBinding Command="WindowManager:CustomCommands.Exit" Executed="CloseWindowMenuItemClick" />
         <CommandBinding Command="WindowManager:CustomCommands.ShowWindow" Executed="ShowWindowMenuItemClick" />
         <CommandBinding Command="WindowManager:CustomCommands.ExportSettings" Executed="ExportSettingsMenuItemClick" />
         <CommandBinding Command="WindowManager:CustomCommands.ImportSettings" Executed="ImportSettingsMenuItemClick" />
-    </Ribbon:RibbonWindow.CommandBindings>
+    </RibbonWindow.CommandBindings>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -29,10 +28,10 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Ribbon:Ribbon>
-            <Ribbon:Ribbon.ApplicationMenu>
-                <Ribbon:RibbonApplicationMenu>
-                    <Ribbon:RibbonApplicationMenu.SmallImageSource>
+        <Ribbon>
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenu.SmallImageSource>
                         <DrawingImage>
                             <DrawingImage.Drawing>
                                 <GlyphRunDrawing ForegroundBrush="White">
@@ -48,19 +47,19 @@
                                 </GlyphRunDrawing>
                             </DrawingImage.Drawing>
                         </DrawingImage>
-                    </Ribbon:RibbonApplicationMenu.SmallImageSource>
-                    <Ribbon:RibbonApplicationMenuItem Header="Exit"
+                    </RibbonApplicationMenu.SmallImageSource>
+                    <RibbonApplicationMenuItem Header="Exit"
                                             Command="WindowManager:CustomCommands.Exit" />
-                </Ribbon:RibbonApplicationMenu>
-            </Ribbon:Ribbon.ApplicationMenu>
-            <Ribbon:RibbonTab Header="Home">
-                <Ribbon:RibbonGroup Header="Configuration">
-                    <Ribbon:RibbonButton LargeImageSource="/Assets/Save.png" Label="Save" Click="SaveClick" />
-                    <Ribbon:RibbonButton LargeImageSource="/Assets/Undo.png" Label="Reset" Click="ResetClick" />
-                    <Ribbon:RibbonButton LargeImageSource="/Assets/Delete.png" Label="Default Configuration"
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Home">
+                <RibbonGroup Header="Configuration">
+                    <RibbonButton LargeImageSource="/Assets/Save.png" Label="Save" Click="SaveClick" />
+                    <RibbonButton LargeImageSource="/Assets/Undo.png" Label="Reset" Click="ResetClick" />
+                    <RibbonButton LargeImageSource="/Assets/Delete.png" Label="Default Configuration"
                                Click="DefaultSettingsClick" />
-                </Ribbon:RibbonGroup>
-                <Ribbon:RibbonGroup Header="Profile">
+                </RibbonGroup>
+                <RibbonGroup Header="Profile">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -81,21 +80,21 @@
                         <ComboBox Grid.Column="1" Grid.Row="1" x:Name="_themeComboBox" SelectionChanged="ThemeChanged"
                       x:FieldModifier="private" />
 
-                        <Ribbon:RibbonButton Grid.Column="2" SmallImageSource="/Assets/Add.png"
+                        <RibbonButton Grid.Column="2" SmallImageSource="/Assets/Add.png"
                                  Click="CreateHotkeys" />
-                        <Ribbon:RibbonButton Grid.Column="3" SmallImageSource="/Assets/Delete.png"
+                        <RibbonButton Grid.Column="3" SmallImageSource="/Assets/Delete.png"
                                  Click="DeleteHotKeys" />
 
-                        <Ribbon:RibbonButton Grid.Row="1" Grid.Column="2" SmallImageSource="/Assets/Add.png"
+                        <RibbonButton Grid.Row="1" Grid.Column="2" SmallImageSource="/Assets/Add.png"
                                  Click="CreateTheme" />
-                        <Ribbon:RibbonButton Grid.Row="1" Grid.Column="3" SmallImageSource="/Assets/Delete.png"
+                        <RibbonButton Grid.Row="1" Grid.Column="3" SmallImageSource="/Assets/Delete.png"
                                  Click="DeleteTheme" />
                     </Grid>
 
-                </Ribbon:RibbonGroup>
-            </Ribbon:RibbonTab>
-            <Ribbon:RibbonTab Header="About">
-                <Ribbon:RibbonGroup Header="About">
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="About">
+                <RibbonGroup Header="About">
                     <StackPanel>
                         <TextBlock FontWeight="Bold">
               <Run Text="WindowManager" />
@@ -111,9 +110,9 @@
               </Hyperlink>
                         </TextBlock>
                     </StackPanel>
-                </Ribbon:RibbonGroup>
-            </Ribbon:RibbonTab>
-        </Ribbon:Ribbon>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
 
 
         <TaskbarNotification:TaskbarIcon IconSource="/Assets/Logo.ico" ToolTipText="Window Manager"
@@ -357,4 +356,4 @@
 
         </Grid>
     </Grid>
-</Ribbon:RibbonWindow>
+</RibbonWindow>
