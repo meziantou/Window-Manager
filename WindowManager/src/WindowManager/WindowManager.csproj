@@ -158,7 +158,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Logo.ico</ApplicationIcon>
@@ -168,7 +168,9 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>External\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -183,7 +185,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>External\WPFToolkit.Extended.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -255,16 +260,15 @@
     </Compile>
     <AppDesigner Include="Properties\" />
     <None Include="Properties\app.manifest" />
-    <None Include="WindowManager_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Add.png" />
-    <Content Include="External\WPFToolkit.Extended.dll" />
+    <None Include="External\WPFToolkit.Extended.dll" />
     <Resource Include="Assets\Save.png" />
     <Resource Include="Assets\Delete.png" />
     <Resource Include="Assets\Undo.png" />
     <Resource Include="Assets\Logo.ico" />
-    <Content Include="External\Hardcodet.Wpf.TaskbarNotification.dll" />
+    <None Include="External\Hardcodet.Wpf.TaskbarNotification.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
