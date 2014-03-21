@@ -58,14 +58,14 @@ namespace WindowManager.Core.Settings
             hotKeys.TopMostHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad0);
             hotKeys.BottomMostHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad1);
             hotKeys.MinimizeWindowHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad2);
-            hotKeys.ExtendBottomHotKey = new HotKey(ModifierKeys.Windows, Keys.Down);
-            hotKeys.ExtendTopHotKey = new HotKey(ModifierKeys.Windows, Keys.Up);
-            hotKeys.ExtendLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.Left);
-            hotKeys.ExtendRightHotKey = new HotKey(ModifierKeys.Windows, Keys.Right);
-            hotKeys.ReduceBottomHotKey = new HotKey(ModifierKeys.Alt, Keys.Up);
-            hotKeys.ReduceTopHotKey = new HotKey(ModifierKeys.Alt, Keys.Down);
-            hotKeys.ReduceLeftHotKey = new HotKey(ModifierKeys.Alt, Keys.Right);
-            hotKeys.ReduceRightHotKey = new HotKey(ModifierKeys.Alt, Keys.Left);
+            //hotKeys.ExtendBottomHotKey = new HotKey(ModifierKeys.Windows, Keys.Down);
+            //hotKeys.ExtendTopHotKey = new HotKey(ModifierKeys.Windows, Keys.Up);
+            //hotKeys.ExtendLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.Left);
+            //hotKeys.ExtendRightHotKey = new HotKey(ModifierKeys.Windows, Keys.Right);
+            //hotKeys.ReduceBottomHotKey = new HotKey(ModifierKeys.Alt, Keys.Up);
+            //hotKeys.ReduceTopHotKey = new HotKey(ModifierKeys.Alt, Keys.Down);
+            //hotKeys.ReduceLeftHotKey = new HotKey(ModifierKeys.Alt, Keys.Right);
+            //hotKeys.ReduceRightHotKey = new HotKey(ModifierKeys.Alt, Keys.Left);
 
             return hotKeys;
         }
