@@ -32,7 +32,7 @@ namespace WindowManager
             }
             foreach (Screen screen in Screen.AllScreens)
             {
-                SizeSelectionWindow window = new SizeSelectionWindow(screen, _settings.Theme.NbItemsPerRow,
+                var window = new SizeSelectionWindow(screen, _settings.Theme.NbItemsPerRow,
                                                                      _settings.Theme.NbItemsPerColumn, _settings);
                 window.Show();
                 _screens.Add(window);
@@ -49,7 +49,7 @@ namespace WindowManager
         private void WindowSizeClosed(object sender, EventArgs e)
         {
             Trace.WriteLine("SizeSelectionWindow Closed");
-            SizeSelectionWindow window = (SizeSelectionWindow)sender;
+            var window = (SizeSelectionWindow)sender;
             UnregisterEvent(window);
             _screens.Remove(window);
             CloseAllWindow();
@@ -59,7 +59,7 @@ namespace WindowManager
         {
             Trace.WriteLine(string.Format("Size Selected: x={0}, y={1}, width={2}, height={3}", e.Rectangle.X, e.Rectangle.Y, e.Rectangle.Width, e.Rectangle.Height));
             CloseAllWindow();
-            Win32Window window = Win32Window.GetForegroundWindow();
+            var window = Win32Window.GetForegroundWindow();
             window.Rectangle = e.Rectangle;
 
             if (!e.Maximized || !_settings.FullScreenMaximized)

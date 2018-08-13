@@ -24,7 +24,7 @@ namespace WindowManager.Core
         public void Install()
         {
             _proc = HookCallback;
-            using (Process curProcess = Process.GetCurrentProcess())
+            using (var curProcess = Process.GetCurrentProcess())
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
@@ -36,17 +36,17 @@ namespace WindowManager.Core
         private IntPtr HookCallback(
             int nCode, IntPtr wParam, IntPtr lParam)
         {
-            bool handled = false;
+            var handled = false;
             if ((nCode >= 0) && (KeyDown != null || KeyUp != null || KeyPress != null))
             {
                 //read structure KeyboardHookStruct at lParam
-                KeyboardHookStruct myKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
+                var myKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
 
                 //raise KeyDown
                 if (KeyDown != null && (wParam.ToInt32() == WM_KEYDOWN || wParam.ToInt32() == WM_SYSKEYDOWN))
                 {
-                    Keys keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    KeyEventArgs e = new KeyEventArgs(keyData);
+                    var keyData = (Keys)myKeyboardHookStruct.vkCode;
+                    var e = new KeyEventArgs(keyData);
                     KeyDown(this, e);
                     handled = handled || e.Handled;
                 }
@@ -54,21 +54,21 @@ namespace WindowManager.Core
                 // raise KeyPress
                 if (KeyPress != null && wParam.ToInt32() == WM_KEYDOWN)
                 {
-                    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80);
-                    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0);
+                    var isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80);
+                    var isDownCapslock = (GetKeyState(VK_CAPITAL) != 0);
 
-                    byte[] keyState = new byte[256];
+                    var keyState = new byte[256];
                     GetKeyboardState(keyState);
-                    byte[] inBuffer = new byte[2];
+                    var inBuffer = new byte[2];
                     if (ToAscii(myKeyboardHookStruct.vkCode,
                               myKeyboardHookStruct.scanCode,
                               keyState,
                               inBuffer,
                               myKeyboardHookStruct.flags) == 1)
                     {
-                        char key = (char)inBuffer[0];
+                        var key = (char)inBuffer[0];
                         if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) key = Char.ToUpper(key);
-                        KeyPressEventArgs e = new KeyPressEventArgs(key);
+                        var e = new KeyPressEventArgs(key);
                         KeyPress(this, e);
                         handled = handled || e.Handled;
                     }
@@ -77,8 +77,8 @@ namespace WindowManager.Core
                 // raise KeyUp
                 if (KeyUp != null && (wParam.ToInt32() == WM_KEYUP || wParam.ToInt32() == WM_SYSKEYUP))
                 {
-                    Keys keyData = (Keys)myKeyboardHookStruct.vkCode;
-                    KeyEventArgs e = new KeyEventArgs(keyData);
+                    var keyData = (Keys)myKeyboardHookStruct.vkCode;
+                    var e = new KeyEventArgs(keyData);
                     KeyUp(this, e);
                     handled = handled || e.Handled;
                 }

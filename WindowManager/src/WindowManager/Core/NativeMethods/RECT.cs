@@ -17,7 +17,7 @@ namespace WindowManager.Core.NativeMethods
             this.right = right;
             this.bottom = bottom;
         }
-        public Rectangle Rect { get { return new Rectangle(this.left, this.top, this.right - this.left, this.bottom - this.top); } }
+        public Rectangle Rect => new Rectangle(this.left, this.top, this.right - this.left, this.bottom - this.top);
         public static RECT FromXYWH(int x, int y, int width, int height)
         {
             return new RECT(x,

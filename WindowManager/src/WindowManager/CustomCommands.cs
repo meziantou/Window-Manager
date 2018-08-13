@@ -21,25 +21,13 @@ namespace WindowManager
         {
         }
 
-        public static RoutedUICommand Exit
-        {
-            get { return ExitCommand; }
-        }
+        public static RoutedUICommand Exit => ExitCommand;
 
-        public static RoutedUICommand ShowWindow
-        {
-            get { return ShowWindowCommand; }
-        }
+        public static RoutedUICommand ShowWindow => ShowWindowCommand;
 
 
-        public static RoutedUICommand ExportSettings
-        {
-            get { return ExportSettingsCommand; }
-        }
+        public static RoutedUICommand ExportSettings => ExportSettingsCommand;
 
-        public static RoutedUICommand ImportSettings
-        {
-            get { return ImportSettingsCommand; }
-        }
+        public static RoutedUICommand ImportSettings => ImportSettingsCommand;
     }
 }

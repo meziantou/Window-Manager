@@ -130,11 +130,11 @@ namespace WindowManager.Core.NativeMethods
 
         public static Rectangle GetPlacement(IntPtr handle, out bool maximized)
         {
-            WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+            var placement = new WINDOWPLACEMENT();
             placement.Length = Marshal.SizeOf(placement);
             GetWindowPlacement(handle, ref placement);
 
-            Rectangle rectangle = new Rectangle(
+            var rectangle = new Rectangle(
                 placement.NormalPosition.X,
                 placement.NormalPosition.Y,
                 placement.NormalPosition.Width - placement.NormalPosition.X,
@@ -191,8 +191,7 @@ namespace WindowManager.Core.NativeMethods
 
         public static Rectangle GetPlacement(IntPtr handle)
         {
-            bool maximized;
-            return GetPlacement(handle, out maximized);
+            return GetPlacement(handle, out var maximized);
         }
 
         [DllImport("User32.dll", CharSet = CharSet.Auto)]

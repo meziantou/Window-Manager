@@ -11,8 +11,8 @@ namespace WindowManager.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             _value = System.Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-            ulong param = System.Convert.ToUInt64(parameter, CultureInfo.InvariantCulture);
-            bool @equals = Equals(_value & param, param);
+            var param = System.Convert.ToUInt64(parameter, CultureInfo.InvariantCulture);
+            var @equals = Equals(_value & param, param);
             return @equals;
         }
 
@@ -24,7 +24,7 @@ namespace WindowManager.Converters
             else
                 result = _value & (~System.Convert.ToUInt64(parameter, CultureInfo.InvariantCulture));
 
-            object o = Enum.ToObject(targetType, result);
+            var o = Enum.ToObject(targetType, result);
             return o;
         }
     }

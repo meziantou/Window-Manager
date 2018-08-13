@@ -45,7 +45,7 @@ namespace WindowManager.Core
                 Trace.Write("Pressed keys: "); PrintCollection(other);
 
 
-                int skip = 0;
+                var skip = 0;
                 foreach (Keys keys in other)
                 {
                     if (keys == Keys.LMenu || keys == Keys.RMenu)
@@ -58,13 +58,13 @@ namespace WindowManager.Core
                         return false;
                 }
 
-                bool @equals = (_keys.Count == (other.Count - skip));
+                var @equals = (_keys.Count == (other.Count - skip));
                 return @equals;
             }
 
             public override string ToString()
             {
-                return string.Format((string) "ModifierKeys: {0}, Keys: {1}", (object) ModifierKeys, (object) Keys);
+                return string.Format("ModifierKeys: {0}, Keys: {1}", ModifierKeys, Keys);
             }
 
             public ModifierKeys ModifierKeys { get; set; }
@@ -137,7 +137,7 @@ namespace WindowManager.Core
 
         public void RegisterHotKey(ModifierKeys modifierKeys, Keys key, HotKeyPressedEventHandler action)
         {
-            HotKey hotKey = new HotKey(modifierKeys, key);
+            var hotKey = new HotKey(modifierKeys, key);
             hotKey.Action = action;
             if (_hotKeys.Contains(hotKey))
                 return; // TODO manage multiple handler
@@ -151,9 +151,9 @@ namespace WindowManager.Core
         void HookKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             // List pressed keys
-            List<Keys> keys = new List<Keys>();
-            KeyboardState state = KeyboardState.GetCurrent();
-            for (int i = 0; i < 256; i++)
+            var keys = new List<Keys>();
+            var state = KeyboardState.GetCurrent();
+            for (var i = 0; i < 256; i++)
             {
                 if (state.IsDown((Keys)i))
                 {

@@ -106,7 +106,7 @@
                         </TextBlock>
                         <TextBlock>
               <Hyperlink NavigateUri="http://www.meziantou.net" RequestNavigate="HandleRequestNavigate">
-                http://www.meziantou.net
+                https://www.meziantou.net
               </Hyperlink>
                         </TextBlock>
                     </StackPanel>
@@ -322,23 +322,23 @@
                           IsChecked="{Binding Theme.SwitchWindowFullScreen, Mode=TwoWay}" />
 
                                 <TextBlock Grid.Row="1" Text="Background Color: " />
-                                <xctk:ColorPicker Grid.Row="1" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False" Style="{DynamicResource ColorPickerStyle1}"
+                                <xctk:ColorPicker Grid.Row="1" Grid.Column="1" DisplayColorAndName="True" 
+                                  ShowAvailableColors="False" ShowStandardColors="False"
                                   SelectedColor="{Binding Theme.BackgroundColor, Mode=TwoWay}" HorizontalAlignment="Left" />
 
                                 <TextBlock Grid.Row="2" Text="Foreground Color: " />
                                 <xctk:ColorPicker Grid.Row="2" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False" Style="{DynamicResource ColorPickerStyle1}"
+                                  ShowAvailableColors="False" ShowStandardColors="False"
                                   SelectedColor="{Binding Theme.ForegroundColor, Mode=TwoWay}" HorizontalAlignment="Left" />
 
                                 <TextBlock Grid.Row="3" Text="Selection Border Color: " />
                                 <xctk:ColorPicker Grid.Row="3" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False" Style="{DynamicResource ColorPickerStyle1}"
+                                  ShowAvailableColors="False" ShowStandardColors="False"
                                   SelectedColor="{Binding Theme.SelectionBorderColor, Mode=TwoWay}" HorizontalAlignment="Left" />
 
                                 <TextBlock Grid.Row="4" Text="Selection Fill Color: " />
                                 <xctk:ColorPicker Grid.Row="4" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False" Style="{DynamicResource ColorPickerStyle1}"
+                                  ShowAvailableColors="False" ShowStandardColors="False"
                                   SelectedColor="{Binding Theme.SelectionFillColor, Mode=TwoWay}" HorizontalAlignment="Left" />
 
                                 <TextBlock Grid.Row="5" Text="Rows: " />

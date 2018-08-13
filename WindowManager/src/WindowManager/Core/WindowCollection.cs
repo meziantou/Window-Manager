@@ -25,12 +25,7 @@ namespace WindowManager.Core
             _shellHook.EnumWindows();
         }
 
-        public static WindowCollection Instance
-        {
-            get { return _instance; }
-        }
-
-        #region IDisposable Members
+        public static WindowCollection Instance => _instance;
 
         public void Dispose()
         {
@@ -42,10 +37,6 @@ namespace WindowManager.Core
             _shellHook = null;
         }
 
-        #endregion
-
-        #region IEnumerable<Win32Window> Members
-
         public IEnumerator<Win32Window> GetEnumerator()
         {
             return _windows.Values.GetEnumerator();
@@ -56,8 +47,6 @@ namespace WindowManager.Core
             return GetEnumerator();
         }
 
-        #endregion
-
         public event WindowCreatedEventHandler WindowCreated;
         public event WindowDestroyedEventHandler WindowDestroyed;
 
@@ -66,14 +55,13 @@ namespace WindowManager.Core
             if (Instance != null)
                 throw new InvalidOperationException("WindowCollection already initialized.");
 
-            WindowCollection windowCollection = new WindowCollection(handle);
+            var windowCollection = new WindowCollection(handle);
             _instance = windowCollection;
         }
 
         private void ShellHookWindowCreated(ShellHook sender, IntPtr hWnd)
         {
-            Win32Window window;
-            if (_windows.TryGetValue(hWnd, out window))
+            if (_windows.TryGetValue(hWnd, out Win32Window window))
             {
                 window = new Win32Window(hWnd);
                 _windows.Add(hWnd, window);
@@ -84,8 +72,7 @@ namespace WindowManager.Core
 
         private void ShellHookWindowDestroyed(ShellHook sender, IntPtr hwnd)
         {
-            Win32Window window;
-            if (_windows.TryGetValue(hwnd, out window))
+            if (_windows.TryGetValue(hwnd, out Win32Window window))
             {
                 OnWindowDestroyed(window);
                 _windows.Remove(hwnd);
@@ -94,14 +81,12 @@ namespace WindowManager.Core
 
         private void OnWindowDestroyed(Win32Window window)
         {
-            WindowDestroyedEventHandler handler = WindowDestroyed;
-            if (handler != null) handler(this, window);
+            WindowDestroyed?.Invoke(this, window);
         }
 
         private void OnWindowCreated(Win32Window window)
         {
-            WindowCreatedEventHandler handler = WindowCreated;
-            if (handler != null) handler(this, window);
+            WindowCreated?.Invoke(this, window);
         }
     }
 
@@ -121,7 +106,7 @@ namespace WindowManager.Core
 
         public ShellHook(IntPtr hWnd)
         {
-            CreateParams cp = new CreateParams();
+            var cp = new CreateParams();
 
             /*// Fill in the CreateParams details.
             cp.Caption = "Click here";
@@ -152,8 +137,6 @@ namespace WindowManager.Core
                 Trace.WriteLine("WM_ShellHook: " + _wmShellHook);
             }
         }
-
-        #region Shell events
 
         /// <summary>
         ///   A top-level, unowned window has been created. The window exists when the system calls this hook.
@@ -230,65 +213,38 @@ namespace WindowManager.Core
                         }
                         break;
                     case User32.ShellEvents.HSHELL_WINDOWDESTROYED:
-                        if (WindowDestroyed != null)
-                        {
-                            WindowDestroyed(this, m.LParam);
-                        }
+                        WindowDestroyed?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_ACTIVATESHELLWINDOW:
-                        if (ActivateShellWindow != null)
-                        {
-                            ActivateShellWindow(this, IntPtr.Zero);
-                        }
+                        ActivateShellWindow?.Invoke(this, IntPtr.Zero);
                         break;
                     case User32.ShellEvents.HSHELL_WINDOWACTIVATED:
-                        if (WindowActivated != null)
-                        {
-                            WindowActivated(this, m.LParam);
-                        }
+                        WindowActivated?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_GETMINRECT:
                         if (GetMinRect != null)
                         {
-                            SHELLHOOKINFO* ptr = (SHELLHOOKINFO*)m.LParam.ToPointer();
+                            var ptr = (SHELLHOOKINFO*)m.LParam.ToPointer();
                             GetMinRect(this, ptr);
                         }
                         break;
                     case User32.ShellEvents.HSHELL_REDRAW:
-                        if (Redraw != null)
-                        {
-                            Redraw(this, m.LParam);
-                        }
+                        Redraw?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_TASKMAN:
-                        if (Taskman != null)
-                        {
-                            Taskman(this, m.LParam);
-                        }
+                        Taskman?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_LANGUAGE:
-                        if (Language != null)
-                        {
-                            Language(this, IntPtr.Zero);
-                        }
+                        Language?.Invoke(this, IntPtr.Zero);
                         break;
                     case User32.ShellEvents.HSHELL_SYSMENU:
-                        if (Sysmenu != null)
-                        {
-                            Sysmenu(this, m.LParam);
-                        }
+                        Sysmenu?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_ENDTASK:
-                        if (EndTask != null)
-                        {
-                            EndTask(this, m.LParam);
-                        }
+                        EndTask?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_ACCESSIBILITYSTATE:
-                        if (Accessibilitystate != null)
-                        {
-                            Accessibilitystate(this, m.LParam);
-                        }
+                        Accessibilitystate?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_APPCOMMAND:
                         if (Appcommand != null)
@@ -297,28 +253,16 @@ namespace WindowManager.Core
                         }
                         break;
                     case User32.ShellEvents.HSHELL_WINDOWREPLACED:
-                        if (WindowReplaced != null)
-                        {
-                            WindowReplaced(this, m.LParam);
-                        }
+                        WindowReplaced?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_WINDOWREPLACING:
-                        if (WindowReplacing != null)
-                        {
-                            WindowReplacing(this, m.LParam);
-                        }
+                        WindowReplacing?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_FLASH:
-                        if (Flash != null)
-                        {
-                            Flash(this, m.LParam);
-                        }
+                        Flash?.Invoke(this, m.LParam);
                         break;
                     case User32.ShellEvents.HSHELL_RUDEAPPACTIVATED:
-                        if (RudeAppActivated != null)
-                        {
-                            RudeAppActivated(this, m.LParam);
-                        }
+                        RudeAppActivated?.Invoke(this, m.LParam);
                         break;
                     default:
                         break;
@@ -327,16 +271,10 @@ namespace WindowManager.Core
             base.WndProc(ref m);
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         public void Dispose()
         {
             User32.RegisterShellHook(Handle, 0);
         }
-
-        #endregion
 
         public void EnumWindows()
         {
@@ -354,10 +292,7 @@ namespace WindowManager.Core
 
         private bool OnWindowCreated(IntPtr hWnd)
         {
-            if (WindowCreated != null)
-            {
-                WindowCreated(this, hWnd);
-            }
+            WindowCreated?.Invoke(this, hWnd);
 
             return true;
         }

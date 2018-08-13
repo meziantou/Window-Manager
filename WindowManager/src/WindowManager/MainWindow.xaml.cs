@@ -36,7 +36,7 @@ namespace WindowManager
             InitializeComponent();
             ResetSettings();
 
-            CommandLine commandLine = new CommandLine();
+            var commandLine = new CommandLine();
             if (!commandLine.ShowMainWindow && !_settings.FirstStart)
             {
                 Hide();
@@ -226,7 +226,7 @@ namespace WindowManager
 
         private void DefaultSettingsClick(object sender, RoutedEventArgs e)
         {
-            bool firstStart = _settings.FirstStart;
+            var firstStart = _settings.FirstStart;
             _settings = Settings.GetDefault();
             _settings.FirstStart = firstStart;
             _settings.Save();
@@ -243,19 +243,19 @@ namespace WindowManager
 
         private void HandleRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            string navigateUri = ((Hyperlink)sender).NavigateUri.ToString();
+            var navigateUri = ((Hyperlink)sender).NavigateUri.ToString();
             Process.Start(new ProcessStartInfo(navigateUri));
             e.Handled = true;
         }
 
         private void ExportSettingsMenuItemClick(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveFileDialog fileDialog = new SaveFileDialog();
+            var fileDialog = new SaveFileDialog();
             fileDialog.AddExtension = true;
             fileDialog.DefaultExt = ".xml";
             fileDialog.OverwritePrompt = true;
             fileDialog.Filter = "WindowManager Profile (.xml)|*.xml";
-            bool? showDialog = fileDialog.ShowDialog();
+            var showDialog = fileDialog.ShowDialog();
             if (showDialog == true)
             {
                 try
@@ -271,11 +271,11 @@ namespace WindowManager
 
         private void ImportSettingsMenuItemClick(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
+            var fileDialog = new OpenFileDialog();
             fileDialog.AddExtension = true;
             fileDialog.DefaultExt = ".xml";
             fileDialog.Filter = "WindowManager Profile (.xml)|*.xml";
-            bool? showDialog = fileDialog.ShowDialog();
+            var showDialog = fileDialog.ShowDialog();
             if (showDialog == true)
             {
                 try
@@ -291,10 +291,10 @@ namespace WindowManager
 
         private void HotKeysChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            object selectedItem = _hotKeysComboBox.SelectedItem;
+            var selectedItem = _hotKeysComboBox.SelectedItem;
             if (selectedItem == null)
                 return;
-            string name = selectedItem.ToString();
+            var name = selectedItem.ToString();
             if (_settings.CurrentHotKeys == name)
                 return;
 
@@ -304,10 +304,10 @@ namespace WindowManager
 
         private void ThemeChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            object selectedItem = _themeComboBox.SelectedItem;
+            var selectedItem = _themeComboBox.SelectedItem;
             if (selectedItem == null)
                 return;
-            string name = selectedItem.ToString();
+            var name = selectedItem.ToString();
             if (_settings.CurrentTheme == name)
                 return;
 
@@ -317,8 +317,8 @@ namespace WindowManager
 
         private void CreateHotkeys(object sender, RoutedEventArgs e)
         {
-            NameInputWindow input = new NameInputWindow();
-            bool? showDialog = input.ShowDialog();
+            var input = new NameInputWindow();
+            var showDialog = input.ShowDialog();
             if (showDialog == true)
             {
                 _settings.CreateHotKeys(input.Value);
@@ -352,8 +352,8 @@ namespace WindowManager
 
         private void CreateTheme(object sender, RoutedEventArgs e)
         {
-            NameInputWindow input = new NameInputWindow();
-            bool? showDialog = input.ShowDialog();
+            var input = new NameInputWindow();
+            var showDialog = input.ShowDialog();
             if (showDialog == true)
             {
                 _settings.CreateTheme(input.Value);

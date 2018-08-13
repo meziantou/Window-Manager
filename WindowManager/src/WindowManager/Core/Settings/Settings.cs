@@ -106,9 +106,9 @@ namespace WindowManager.Core.Settings
 
         public void DeleteTheme(string name)
         {
-            string pathTheme = Path.Combine(GetThemeFolder(), name + Extension);
+            var pathTheme = Path.Combine(GetThemeFolder(), name + Extension);
             File.Delete(pathTheme);
-            string newName = GetThemeNames().FirstOrDefault();
+            var newName = GetThemeNames().FirstOrDefault();
             if (newName != null)
             {
                 SetTheme(newName);
@@ -118,9 +118,9 @@ namespace WindowManager.Core.Settings
 
         public void DeleteHotKeys(string name)
         {
-            string pathHotKeys = Path.Combine(GetHotKeysFolder(), name + Extension);
+            var pathHotKeys = Path.Combine(GetHotKeysFolder(), name + Extension);
             File.Delete(pathHotKeys);
-            string newName = GetHotKeysNames().FirstOrDefault();
+            var newName = GetHotKeysNames().FirstOrDefault();
             if (newName != null)
             {
                 SetHotKeys(newName);
@@ -136,9 +136,9 @@ namespace WindowManager.Core.Settings
 
         public void Save()
         {
-            string path = GetSettingsFile();
-            string pathTheme = Path.Combine(GetThemeFolder(), CurrentTheme + Extension);
-            string pathHotKeys = Path.Combine(GetHotKeysFolder(), CurrentHotKeys + Extension);
+            var path = GetSettingsFile();
+            var pathTheme = Path.Combine(GetThemeFolder(), CurrentTheme + Extension);
+            var pathHotKeys = Path.Combine(GetHotKeysFolder(), CurrentHotKeys + Extension);
 
             Directory.CreateDirectory(GetSettingFolder());
             Directory.CreateDirectory(GetThemeFolder());
@@ -167,7 +167,7 @@ namespace WindowManager.Core.Settings
 
         public static Settings Load()
         {
-            string path = GetSettingsFile();
+            var path = GetSettingsFile();
             Settings settings;
             using (Stream stream = File.OpenRead(path))
             {
@@ -188,7 +188,7 @@ namespace WindowManager.Core.Settings
 
         public static Settings GetDefault()
         {
-            Settings settings = new Settings();
+            var settings = new Settings();
             settings.CurrentHotKeys = "Default";
             settings.CurrentTheme = "Default";
             settings.FirstStart = true;
@@ -215,9 +215,9 @@ namespace WindowManager.Core.Settings
 
             try
             {
-                XmlSerializer xs = new XmlSerializer(typeof(T));
+                var xs = new XmlSerializer(typeof(T));
 
-                T temp = (T)xs.Deserialize(stream);
+                var temp = (T)xs.Deserialize(stream);
                 return temp;
             }
             finally
@@ -239,7 +239,7 @@ namespace WindowManager.Core.Settings
 
             try
             {
-                XmlSerializer xs = new XmlSerializer(typeof(T));
+                var xs = new XmlSerializer(typeof(T));
                 xs.Serialize(stream, obj);
             }
             finally
@@ -262,7 +262,7 @@ namespace WindowManager.Core.Settings
 
         private static Theme LoadTheme(string name)
         {
-            string path = Path.Combine(GetThemeFolder(), name + Extension);
+            var path = Path.Combine(GetThemeFolder(), name + Extension);
             using (Stream stream = File.OpenRead(path))
             {
                 Theme theme = LoadXml<Theme>(stream);
@@ -273,7 +273,7 @@ namespace WindowManager.Core.Settings
 
         private static HotKeys LoadHotKeys(string name)
         {
-            string path = Path.Combine(GetHotKeysFolder(), name + Extension);
+            var path = Path.Combine(GetHotKeysFolder(), name + Extension);
             using (Stream stream = File.OpenRead(path))
             {
                 HotKeys hotKeys = LoadXml<HotKeys>(stream);
@@ -284,7 +284,7 @@ namespace WindowManager.Core.Settings
 
         private static void SaveTheme(Theme theme)
         {
-            string path = Path.Combine(GetThemeFolder(), theme.Name + Extension);
+            var path = Path.Combine(GetThemeFolder(), theme.Name + Extension);
             Directory.CreateDirectory(path);
             using (Stream stream = File.Open(path, FileMode.Create))
             {
@@ -294,7 +294,7 @@ namespace WindowManager.Core.Settings
 
         private static void SaveHotKeys(HotKeys hotKeys)
         {
-            string path = Path.Combine(GetHotKeysFolder(), hotKeys.Name + Extension);
+            var path = Path.Combine(GetHotKeysFolder(), hotKeys.Name + Extension);
             Directory.CreateDirectory(path);
             using (Stream stream = File.Open(path, FileMode.Create))
             {
@@ -304,7 +304,7 @@ namespace WindowManager.Core.Settings
 
         public Settings Clone()
         {
-            Settings settings = new Settings();
+            var settings = new Settings();
             settings.HotKeys = new HotKeys();
             settings.Theme = new Theme();
 
@@ -374,8 +374,7 @@ namespace WindowManager.Core.Settings
 
         protected void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

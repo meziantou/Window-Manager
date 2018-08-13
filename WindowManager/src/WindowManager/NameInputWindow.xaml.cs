@@ -27,7 +27,7 @@ namespace WindowManager
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string value = textBox.Text.Trim();
+            var value = textBox.Text.Trim();
             if (string.IsNullOrEmpty(value))
             {
                 textBox.BorderBrush = Brushes.Red;

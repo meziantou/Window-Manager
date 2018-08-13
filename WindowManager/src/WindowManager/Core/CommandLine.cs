@@ -9,13 +9,7 @@ namespace WindowManager.Core
         private readonly IEnumerable<string> _args;
 
         static readonly CommandLine _default = new CommandLine();
-        public static CommandLine Default
-        {
-            get
-            {
-                return _default;
-            }
-        }
+        public static CommandLine Default => _default;
 
         public CommandLine()
             : this(Environment.GetCommandLineArgs())
@@ -28,14 +22,8 @@ namespace WindowManager.Core
             _args = args;
         }
 
-        public bool Updated
-        {
-            get { return _args.Contains("/Updated"); }
-        }
+        public bool Updated => _args.Contains("/Updated");
 
-        public bool ShowMainWindow
-        {
-            get { return _args.Contains("/ShowMainWindow"); }
-        }
+        public bool ShowMainWindow => _args.Contains("/ShowMainWindow");
     }
 }

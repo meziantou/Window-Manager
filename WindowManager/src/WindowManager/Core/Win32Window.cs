@@ -28,10 +28,7 @@ namespace WindowManager.Core
             return new Win32Window(foregroundWindow);
         }
 
-        public IntPtr Handle
-        {
-            get { return _handle; }
-        }
+        public IntPtr Handle => _handle;
 
         public Rectangle Rectangle
         {
@@ -50,7 +47,7 @@ namespace WindowManager.Core
         {
             get
             {
-                StringBuilder title = new StringBuilder(256);
+                var title = new StringBuilder(256);
                 User32.GetWindowText(Handle, title, 256);
                 return title.ToString().Trim();
             }
@@ -91,7 +88,7 @@ namespace WindowManager.Core
         {
             get
             {
-                bool isTopMost = User32.IsTopMost(Handle);
+                var isTopMost = User32.IsTopMost(Handle);
                 return isTopMost;
             }
             set
@@ -173,7 +170,7 @@ namespace WindowManager.Core
         {
             // This function removes the Transparency menu we added to the system menu.
             IntPtr windowMenuHandle = User32.GetSystemMenu(Handle, false);
-            int index = User32.GetMenuItemCount(windowMenuHandle);
+            var index = User32.GetMenuItemCount(windowMenuHandle);
             User32.RemoveMenu(windowMenuHandle, index - 3, (int)User32.Menu.MF_BYPOSITION);
             User32.RemoveMenu(windowMenuHandle, index - 3, (int)User32.Menu.MF_BYPOSITION);
 
@@ -196,7 +193,7 @@ namespace WindowManager.Core
             // This gets a handle to the system menu for a window. Once we have that handle, we can add our
             // own menu items.
             IntPtr windowMenuHandle = User32.GetSystemMenu(Handle, false);
-            int index = User32.GetMenuItemCount(windowMenuHandle);
+            var index = User32.GetMenuItemCount(windowMenuHandle);
 
             _transparencyMenuHandle = User32.CreateMenu();
             User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 100, "100%");

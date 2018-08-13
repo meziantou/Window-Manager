@@ -16,8 +16,8 @@ namespace WindowManager.Core
 
         private static int[] ComputeArray(int origin, int size, int position)
         {
-            int[] sizes = new int[Splits.Length];
-            for (int i = 0; i < Splits.Length; i++)
+            var sizes = new int[Splits.Length];
+            for (var i = 0; i < Splits.Length; i++)
             {
                 sizes[i] = (int)(origin + (size) * Splits[i] - position);
             }
@@ -32,18 +32,18 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int minimumSize = screen.Height / 4;
+            var minimumSize = screen.Height / 4;
 
             if (placement.Height <= minimumSize)
                 return;
 
-            int[] sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
-            int size = MaximumValueLessThan(sizes, placement.Height);
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, placement.Height);
 
-            int x = placement.X;
-            int y = placement.Y;
-            int width = placement.Width;
-            int height = size;
+            var x = placement.X;
+            var y = placement.Y;
+            var width = placement.Width;
+            var height = size;
 
             if (height < minimumSize)
                 height = minimumSize;
@@ -58,19 +58,19 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int minimumSize = screen.Height / 4;
+            var minimumSize = screen.Height / 4;
 
 
             if (placement.Height <= minimumSize)
                 return;
 
-            int[] sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
-            int size = MaximumValueLessThan(sizes, 0);
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, 0);
 
-            int x = placement.X;
-            int y = placement.Y + size;
-            int width = placement.Width;
-            int height = placement.Height - size;
+            var x = placement.X;
+            var y = placement.Y + size;
+            var width = placement.Width;
+            var height = placement.Height - size;
 
             if (height < minimumSize)
                 height = minimumSize;
@@ -85,18 +85,18 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int minimumSize = screen.Width / 4;
+            var minimumSize = screen.Width / 4;
 
             if (placement.Width <= minimumSize)
                 return;
 
-            int[] sizes = ComputeArray(screen.X, screen.Width, placement.X);
-            int size = MaximumValueLessThan(sizes, placement.Width);
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MaximumValueLessThan(sizes, placement.Width);
 
-            int x = placement.X;
-            int y = placement.Y;
-            int width = size;
-            int height = placement.Height;
+            var x = placement.X;
+            var y = placement.Y;
+            var width = size;
+            var height = placement.Height;
 
             if (width < minimumSize)
                 width = minimumSize;
@@ -111,19 +111,19 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int minimumSize = screen.Width / 4;
+            var minimumSize = screen.Width / 4;
 
             if (placement.Width <= minimumSize)
                 return;
 
-            int[] sizes = ComputeArray(screen.X, screen.Width, placement.X);
-            int size = MinimumValueGreaterThan(sizes, 0);
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MinimumValueGreaterThan(sizes, 0);
 
 
-            int x = placement.X + size;
-            int y = placement.Y;
-            int width = placement.Width - size;
-            int height = placement.Height;
+            var x = placement.X + size;
+            var y = placement.Y;
+            var width = placement.Width - size;
+            var height = placement.Height;
 
             if (width < minimumSize)
                 width = minimumSize;
@@ -135,7 +135,7 @@ namespace WindowManager.Core
 
         public static int MinimumValueGreaterThan(IList<int> size, int height)
         {
-            for (int i = 0; i < size.Count; i++)
+            for (var i = 0; i < size.Count; i++)
             {
                 if (size[i] > height)
                     return size[i];
@@ -146,7 +146,7 @@ namespace WindowManager.Core
 
         public static int MaximumValueLessThan(IList<int> size, int height)
         {
-            for (int i = size.Count - 1; i >= 0; i--)
+            for (var i = size.Count - 1; i >= 0; i--)
             {
                 if (size[i] < height)
                     return size[i];
@@ -162,13 +162,13 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int[] sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
-            int size = MinimumValueGreaterThan(sizes, placement.Height);
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MinimumValueGreaterThan(sizes, placement.Height);
 
-            int x = placement.X;
-            int y = placement.Y;
-            int width = placement.Width;
-            int height = size;
+            var x = placement.X;
+            var y = placement.Y;
+            var width = placement.Width;
+            var height = size;
 
             SetWindowPosition(window, x, y, width, height);
         }
@@ -180,13 +180,13 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int[] sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
-            int size = MaximumValueLessThan(sizes, 0);
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, 0);
 
-            int x = placement.X;
-            int y = placement.Y + size;
-            int width = placement.Width;
-            int height = placement.Height - size;
+            var x = placement.X;
+            var y = placement.Y + size;
+            var width = placement.Width;
+            var height = placement.Height - size;
 
             SetWindowPosition(window, x, y, width, height);
         }
@@ -198,13 +198,13 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int[] sizes = ComputeArray(screen.X, screen.Width, placement.X);
-            int size = MaximumValueLessThan(sizes, 0);
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MaximumValueLessThan(sizes, 0);
 
-            int x = placement.X + size;
-            int y = placement.Y;
-            int width = placement.Width - size;
-            int height = placement.Height;
+            var x = placement.X + size;
+            var y = placement.Y;
+            var width = placement.Width - size;
+            var height = placement.Height;
 
             SetWindowPosition(window, x, y, width, height);
         }
@@ -216,13 +216,13 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int[] sizes = ComputeArray(screen.X, screen.Width, placement.X);
-            int size = MinimumValueGreaterThan(sizes, placement.Width);
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MinimumValueGreaterThan(sizes, placement.Width);
 
-            int x = placement.X;
-            int y = placement.Y;
-            int width = size;
-            int height = placement.Height;
+            var x = placement.X;
+            var y = placement.Y;
+            var width = size;
+            var height = placement.Height;
 
             SetWindowPosition(window, x, y, width, height);
         }
@@ -249,10 +249,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X + screen.Width / 4;
-            int y = screen.Y + screen.Height / 4;
-            int width = screen.Width / 2;
-            int height = screen.Height / 2;
+            var x = screen.X + screen.Width / 4;
+            var y = screen.Y + screen.Height / 4;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -273,10 +273,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y + screen.Height / 4;
-            int width = screen.Width;
-            int height = screen.Height / 2;
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 4;
+            var width = screen.Width;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -295,10 +295,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X + screen.Width / 4;
-            int y = screen.Y;
-            int width = screen.Width / 2;
-            int height = screen.Height;
+            var x = screen.X + screen.Width / 4;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -312,20 +312,20 @@ namespace WindowManager.Core
 
         public static void SwitchScreen(this Win32Window window)
         {
-            Screen screen = Screen.FromHandle(window.Handle);
-            List<Screen> screens = Screen.AllScreens.ToList();
-            int index = screens.IndexOf(screen) + 1;
+            var screen = Screen.FromHandle(window.Handle);
+            var screens = Screen.AllScreens.ToList();
+            var index = screens.IndexOf(screen) + 1;
             Screen newScreen = screens.Count == index ? screens[0] : screens[index];
 
-            double ratioX = (double)newScreen.WorkingArea.Width / screen.WorkingArea.Width;
-            double ratioY = (double)newScreen.WorkingArea.Height / screen.WorkingArea.Height;
+            var ratioX = (double)newScreen.WorkingArea.Width / screen.WorkingArea.Width;
+            var ratioY = (double)newScreen.WorkingArea.Height / screen.WorkingArea.Height;
 
-            bool maximized = window.WindowState == WindowState.Maximized;
+            var maximized = window.WindowState == WindowState.Maximized;
             Rectangle placement = window.Rectangle;
-            int x = (int)((placement.X - screen.WorkingArea.X) * ratioX + newScreen.WorkingArea.X);
-            int y = (int)((placement.Y - screen.WorkingArea.Y) * ratioY + newScreen.WorkingArea.Y);
-            int width = (int)(placement.Width * ratioX);
-            int height = (int)(placement.Height * ratioY);
+            var x = (int)((placement.X - screen.WorkingArea.X) * ratioX + newScreen.WorkingArea.X);
+            var y = (int)((placement.Y - screen.WorkingArea.Y) * ratioY + newScreen.WorkingArea.Y);
+            var width = (int)(placement.Width * ratioX);
+            var height = (int)(placement.Height * ratioY);
 
             SetWindowPosition(window, x, y, width, height);
 
@@ -362,10 +362,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y + screen.Height / 2;
-            int width = screen.Width / 2;
-            int height = screen.Height / 2;
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -384,7 +384,7 @@ namespace WindowManager.Core
 
             Rectangle screen = GetScreen(window);
 
-            bool maximized = window.WindowState == WindowState.Maximized;
+            var maximized = window.WindowState == WindowState.Maximized;
             if (maximized)
             {
                 Trace.WriteLine("FullScreen => Restore");
@@ -400,10 +400,10 @@ namespace WindowManager.Core
                 else
                 {
                     Trace.WriteLine("Restore => FullScreen");
-                    int x = screen.X;
-                    int y = screen.Y;
-                    int width = screen.Width;
-                    int height = screen.Height;
+                    var x = screen.X;
+                    var y = screen.Y;
+                    var width = screen.Width;
+                    var height = screen.Height;
                     SetWindowPosition(window, x, y, width, height);
                 }
             }
@@ -416,10 +416,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y;
-            int width = screen.Width / 2;
-            int height = screen.Height / 2;
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -438,10 +438,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X + screen.Width / 2;
-            int y = screen.Y + screen.Height / 2;
-            int width = screen.Width / 2;
-            int height = screen.Height / 2;
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -462,10 +462,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X + screen.Width / 2;
-            int y = screen.Y;
-            int width = screen.Width / 2;
-            int height = screen.Height / 2;
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -485,10 +485,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y;
-            int width = screen.Width;
-            int height = screen.Height / 2;
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -506,10 +506,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y + screen.Height / 2;
-            int width = screen.Width;
-            int height = screen.Height / 2;
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width;
+            var height = screen.Height / 2;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -528,10 +528,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X;
-            int y = screen.Y;
-            int width = screen.Width / 2;
-            int height = screen.Height;
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {
@@ -549,10 +549,10 @@ namespace WindowManager.Core
             Rectangle screen = GetScreen(window);
             Rectangle placement = window.Rectangle;
 
-            int x = screen.X + screen.Width / 2;
-            int y = screen.Y;
-            int width = screen.Width / 2;
-            int height = screen.Height;
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
 
             if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
             {

@@ -57,9 +57,9 @@ namespace WindowManager
                     // Send a message to show the main window
                     try
                     {
-                        IpcChannel channel = new IpcChannel("Client");
+                        var channel = new IpcChannel("Client");
                         ChannelServices.RegisterChannel(channel, false);
-                        SingleInstance app =
+                        var app =
                             (SingleInstance)
                             Activator.GetObject(typeof(SingleInstance), string.Format("ipc://{0}/RemotingServer", Name));
 
@@ -97,7 +97,7 @@ namespace WindowManager
 
         private static void RegisterIpcServer()
         {
-            IpcChannel channel = new IpcChannel(Name);
+            var channel = new IpcChannel(Name);
             ChannelServices.RegisterChannel(channel, false);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(SingleInstance), "RemotingServer",
                                                                WellKnownObjectMode.Singleton);

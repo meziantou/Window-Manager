@@ -38,11 +38,11 @@ namespace WindowManager
             this.Resources["selectionBorderBrush"] = new SolidColorBrush(settings.Theme.SelectionBorderColor);
             this.Resources["selectionFillBrush"] = new SolidColorBrush(settings.Theme.SelectionFillColor);
             this.Background = new SolidColorBrush(settings.Theme.BackgroundColor);
-            SizeSelectionViewModel selectionViewModel = new SizeSelectionViewModel();
+            var selectionViewModel = new SizeSelectionViewModel();
             selectionViewModel.NbColumns = NbItemsPerRow;
             selectionViewModel.NbRows = NbItemsPerColumn;
             _screenItems = new List<ScreenItem>();
-            for (int position = 0; position < NbItemsPerColumn * NbItemsPerRow; position++)
+            for (var position = 0; position < NbItemsPerColumn * NbItemsPerRow; position++)
                 _screenItems.Add(new ScreenItem(screen, position));
 
             selectionViewModel.ScreenItems = _screenItems;
@@ -74,20 +74,11 @@ namespace WindowManager
             }
         }
 
-        public Screen Screen
-        {
-            get { return _screen; }
-        }
+        public Screen Screen => _screen;
 
-        public int NbItemsPerRow
-        {
-            get { return _nbItemsPerRow; }
-        }
+        public int NbItemsPerRow => _nbItemsPerRow;
 
-        public int NbItemsPerColumn
-        {
-            get { return _nbItemsPerColumn; }
-        }
+        public int NbItemsPerColumn => _nbItemsPerColumn;
 
         private void OnSizeSelected(SizeSelectedEventArgs e)
         {
@@ -108,16 +99,16 @@ namespace WindowManager
 
         private Rectangle GetSelection()
         {
-            double modX = canvas.ActualWidth / NbItemsPerRow;
-            double modY = canvas.ActualHeight / NbItemsPerColumn;
+            var modX = canvas.ActualWidth / NbItemsPerRow;
+            var modY = canvas.ActualHeight / NbItemsPerColumn;
 
-            double left = Canvas.GetLeft(rectangle);
-            double top = Canvas.GetTop(rectangle);
+            var left = Canvas.GetLeft(rectangle);
+            var top = Canvas.GetTop(rectangle);
 
-            int x = (int)(left / modX);
-            int y = (int)(top / modY);
-            int width = (int)((left + rectangle.Width) / modX) + 1 - x;
-            int height = (int)((top + rectangle.Height) / modY) + 1 - y;
+            var x = (int)(left / modX);
+            var y = (int)(top / modY);
+            var width = (int)((left + rectangle.Width) / modX) + 1 - x;
+            var height = (int)((top + rectangle.Height) / modY) + 1 - y;
 
             if (width + x > NbItemsPerRow)
                 width = NbItemsPerRow - x;
@@ -132,17 +123,17 @@ namespace WindowManager
         {
             Rectangle selection = GetSelection();
 
-            bool maximized = selection.Width == NbItemsPerRow && selection.Height == NbItemsPerColumn;
+            var maximized = selection.Width == NbItemsPerRow && selection.Height == NbItemsPerColumn;
 
-            double widthPerUnit = _screen.WorkingArea.Width / (double)NbItemsPerRow;
-            double heightPerUnit = _screen.WorkingArea.Height / (double)NbItemsPerColumn;
+            var widthPerUnit = _screen.WorkingArea.Width / (double)NbItemsPerRow;
+            var heightPerUnit = _screen.WorkingArea.Height / (double)NbItemsPerColumn;
 
-            int x = (int)(_screen.WorkingArea.Left + selection.X * widthPerUnit);
-            int y = (int)(_screen.WorkingArea.Top + selection.Y * heightPerUnit);
-            int width = (int)((selection.Width) * widthPerUnit);
-            int height = (int)(selection.Height * heightPerUnit);
+            var x = (int)(_screen.WorkingArea.Left + selection.X * widthPerUnit);
+            var y = (int)(_screen.WorkingArea.Top + selection.Y * heightPerUnit);
+            var width = (int)((selection.Width) * widthPerUnit);
+            var height = (int)(selection.Height * heightPerUnit);
 
-            Rectangle rect = new Rectangle(x, y, width, height);
+            var rect = new Rectangle(x, y, width, height);
             OnSizeSelected(new SizeSelectedEventArgs(rect, maximized));
         }
 
@@ -154,10 +145,10 @@ namespace WindowManager
             // Move rectangle
             Point pos = e.GetPosition((IInputElement)sender);
 
-            double x = Math.Min(pos.X, _startPoint.X);
-            double y = Math.Min(pos.Y, _startPoint.Y);
-            double w = Math.Max(pos.X, _startPoint.X) - x;
-            double h = Math.Max(pos.Y, _startPoint.Y) - y;
+            var x = Math.Min(pos.X, _startPoint.X);
+            var y = Math.Min(pos.Y, _startPoint.Y);
+            var w = Math.Max(pos.X, _startPoint.X) - x;
+            var h = Math.Max(pos.Y, _startPoint.Y) - y;
 
             rectangle.Width = w;
             rectangle.Height = h;

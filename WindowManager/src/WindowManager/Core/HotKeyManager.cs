@@ -17,10 +17,8 @@ namespace WindowManager.Core
 
         public HotKeyManager(Settings.Settings settings)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
-
+            _settings = settings ?? throw new ArgumentNullException("settings");
             _errors = new List<string>();
-            _settings = settings;
 
             ISizeSelection exportedValue = GetSizeSelectionInstance();
 
@@ -29,12 +27,7 @@ namespace WindowManager.Core
             RegisterHotKeys();
         }
 
-        public IEnumerable<string> Errors
-        {
-            get { return _errors; }
-        }
-
-        #region IDisposable Members
+        public IEnumerable<string> Errors => _errors;
 
         public void Dispose()
         {
@@ -58,12 +51,10 @@ namespace WindowManager.Core
             _hookHotKey.Dispose();
         }
 
-        #endregion
-
         private ISizeSelection GetSizeSelectionInstance()
         {
-            string location = Assembly.GetEntryAssembly().Location;
-            string path = Path.GetDirectoryName(location);
+            var location = Assembly.GetEntryAssembly().Location;
+            var path = Path.GetDirectoryName(location);
             Debug.Assert(path != null, "path != null");
             var exeCatalog = new DirectoryCatalog(path, "*.exe");
             var dllCatalog = new DirectoryCatalog(path, "*.dll");

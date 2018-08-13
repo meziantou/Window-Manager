@@ -14,15 +14,15 @@ namespace WindowManager.Core
     public sealed class HotKey : IDisposable, ICloneable, INotifyPropertyChanged
     {
         private readonly int _id;
-        public event HotKeyPressedEventHandler HotKeyPressed;
         private IntPtr _handle;
-        private bool _isKeyRegistered;
         private Keys _key;
         private ModifierKeys _modifierKeys;
 
+        public event HotKeyPressedEventHandler HotKeyPressed;
+
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             if ((ModifierKeys & ModifierKeys.Control) == ModifierKeys.Control)
                 sb.Append("Ctrl+");
@@ -33,7 +33,7 @@ namespace WindowManager.Core
             if ((ModifierKeys & ModifierKeys.Windows) == ModifierKeys.Windows)
                 sb.Append("Windows+");
 
-            sb.Append((string) Key.ToString());
+            sb.Append(Key.ToString());
             return sb.ToString();
         }
 
@@ -76,7 +76,7 @@ namespace WindowManager.Core
 
                 _key = value;
                 OnPropertyChanged("Key");
-                if (!_isKeyRegistered)
+                if (!IsRegistered)
                     return;
                 RegisterHotKey();
             }
@@ -93,16 +93,14 @@ namespace WindowManager.Core
                 _modifierKeys = value;
                 OnPropertyChanged("ModifierKeys");
 
-                if (!_isKeyRegistered)
+                if (!IsRegistered)
                     return;
                 RegisterHotKey();
             }
         }
 
-        public bool IsRegistered
-        {
-            get { return _isKeyRegistered; }
-        }
+        [XmlIgnore]
+        public bool IsRegistered { get; private set; }
 
         [XmlIgnore]
         public IntPtr Handle
@@ -138,7 +136,7 @@ namespace WindowManager.Core
 
         public object Clone()
         {
-            HotKey hotKey = new HotKey();
+            var hotKey = new HotKey();
             this.CopyTo(hotKey);
             return hotKey;
         }
@@ -147,10 +145,10 @@ namespace WindowManager.Core
         {
             if (Key == Keys.None)
                 throw new InvalidOperationException("Key must be set.");
-            if (_isKeyRegistered)
+            if (IsRegistered)
                 UnregisterHotKey();
-            _isKeyRegistered = User32.RegisterHotKey(Handle, _id, ModifierKeys, Key);
-            if (!_isKeyRegistered)
+            IsRegistered = User32.RegisterHotKey(Handle, _id, ModifierKeys, Key);
+            if (!IsRegistered)
                 throw new HotKeyAleadyInUse("Hotkey already in use.");
         }
 
@@ -158,7 +156,7 @@ namespace WindowManager.Core
         {
             if (key == Keys.None)
                 throw new InvalidOperationException("Key must be set.");
-            if (_isKeyRegistered)
+            if (IsRegistered)
                 UnregisterHotKey();
             ModifierKeys = modifierKeys;
             Key = key;
@@ -167,7 +165,7 @@ namespace WindowManager.Core
 
         public void UnregisterHotKey()
         {
-            _isKeyRegistered = !User32.UnregisterHotKey(Handle, _id);
+            IsRegistered = !User32.UnregisterHotKey(Handle, _id);
         }
 
         private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)
@@ -196,8 +194,7 @@ namespace WindowManager.Core
 
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

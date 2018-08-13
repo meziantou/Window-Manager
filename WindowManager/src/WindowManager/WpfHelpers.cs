@@ -8,7 +8,7 @@ namespace WindowManager
 
         public static void DoEvents()
         {
-            DispatcherFrame frame = new DispatcherFrame();
+            var frame = new DispatcherFrame();
             DispatcherOperation dispatcherOperation =
                 Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, ExitFrameCallback, frame);
             Dispatcher.PushFrame(frame);

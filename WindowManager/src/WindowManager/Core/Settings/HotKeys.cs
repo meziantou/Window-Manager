@@ -39,7 +39,7 @@ namespace WindowManager.Core.Settings
         {
             Contract.Ensures(Contract.Result<HotKeys>() != null);
 
-            HotKeys hotKeys = new HotKeys();
+            var hotKeys = new HotKeys();
             hotKeys.Name = "Default";
             hotKeys.BottomLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad1);
             hotKeys.BottomHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad2);

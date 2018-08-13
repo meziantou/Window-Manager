@@ -16,7 +16,7 @@ namespace WindowManager.Core
         /// <returns>An instance of <see cref="KeyboardState"/> class representing a snapshot of keyboard state at certain moment.</returns>
         public static KeyboardState GetCurrent()
         {
-            byte[] keyboardStateNative = new byte[256];
+            var keyboardStateNative = new byte[256];
             KeyboardHook.GetKeyboardState(keyboardStateNative);
             return new KeyboardState(keyboardStateNative);
         }
@@ -38,8 +38,8 @@ namespace WindowManager.Core
         /// <returns><b>true</b> if key was down, <b>false</b> - if key was up.</returns>
         public bool IsDown(Keys key)
         {
-            byte keyState = GetKeyState(key);
-            bool isDown = GetHighBit(keyState);
+            var keyState = GetKeyState(key);
+            var isDown = GetHighBit(keyState);
             return isDown;
         }
 
@@ -53,8 +53,8 @@ namespace WindowManager.Core
         /// </returns>
         public bool IsToggled(Keys key)
         {
-            byte keyState = GetKeyState(key);
-            bool isToggled = GetLowBit(keyState);
+            var keyState = GetKeyState(key);
+            var isToggled = GetLowBit(keyState);
             return isToggled;
         }
 
@@ -71,7 +71,7 @@ namespace WindowManager.Core
 
         private byte GetKeyState(Keys key)
         {
-            int virtualKeyCode = (int)key;
+            var virtualKeyCode = (int)key;
             if (virtualKeyCode < 0 || virtualKeyCode > 255)
             {
                 throw new ArgumentOutOfRangeException("key", key, "The value must be between 0 and 255.");

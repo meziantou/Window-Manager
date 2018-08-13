@@ -20,7 +20,7 @@ namespace WindowManager.Core.Settings
         {
             Contract.Ensures(Contract.Result<Theme>() != null);
 
-            Theme theme = new Theme();
+            var theme = new Theme();
             theme.Name = "Default";
             theme.NbItemsPerRow = 10;
             theme.NbItemsPerColumn = 10;
