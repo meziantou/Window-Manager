@@ -9,7 +9,6 @@
               Title="WindowManager" 
               Height="767" 
               Width="737" 
-              Icon="/Assets/Logo.ico" 
               StateChanged="RibbonWindowStateChanged">
 
     <RibbonWindow.Resources>
