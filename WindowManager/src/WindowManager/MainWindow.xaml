@@ -2,7 +2,7 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:WindowManager="clr-namespace:WindowManager"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:Controls="clr-namespace:WindowManager.Controls"
+              xmlns:Controls="clr-namespace:WindowManager.Controls"
               x:Class="WindowManager.MainWindow" mc:Ignorable="d"
               xmlns:TaskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
               xmlns:Settings="clr-namespace:WindowManager.Core.Settings" 
@@ -109,9 +109,6 @@
                             <Setter Property="Margin" Value="3,3,3,3" />
                         </Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Margin" Value="3,3,3,3" />
-                        </Style>
-                        <Style TargetType="{x:Type xctk:IntegerUpDown}">
                             <Setter Property="Margin" Value="3,3,3,3" />
                         </Style>
                     </Grid.Resources>
@@ -289,41 +286,15 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <CheckBox Grid.ColumnSpan="2" Content="Show size selection window in full screen"
-                          IsChecked="{Binding Theme.SwitchWindowFullScreen, Mode=TwoWay}" />
+                                <CheckBox Grid.Row="0" Grid.ColumnSpan="2" Content="Show size selection window in full screen" IsChecked="{Binding Theme.SwitchWindowFullScreen, Mode=TwoWay}" />
 
-                                <TextBlock Grid.Row="1" Text="Background Color: " />
-                                <xctk:ColorPicker Grid.Row="1" Grid.Column="1" DisplayColorAndName="True" 
-                                  ShowAvailableColors="False" ShowStandardColors="False"
-                                  SelectedColor="{Binding Theme.BackgroundColor, Mode=TwoWay}" HorizontalAlignment="Left" />
+                                <TextBlock Grid.Row="1" Text="{Binding Theme.NbItemsPerColumn, StringFormat={}Rows: {0}}" />
+                                <Slider Grid.Row="1" Grid.Column="1" Minimum="2" Maximum="20" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="Both" Value="{Binding Theme.NbItemsPerColumn, Mode=TwoWay}" />
 
-                                <TextBlock Grid.Row="2" Text="Foreground Color: " />
-                                <xctk:ColorPicker Grid.Row="2" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False"
-                                  SelectedColor="{Binding Theme.ForegroundColor, Mode=TwoWay}" HorizontalAlignment="Left" />
-
-                                <TextBlock Grid.Row="3" Text="Selection Border Color: " />
-                                <xctk:ColorPicker Grid.Row="3" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False"
-                                  SelectedColor="{Binding Theme.SelectionBorderColor, Mode=TwoWay}" HorizontalAlignment="Left" />
-
-                                <TextBlock Grid.Row="4" Text="Selection Fill Color: " />
-                                <xctk:ColorPicker Grid.Row="4" Grid.Column="1" DisplayColorAndName="True"
-                                  ShowAvailableColors="False" ShowStandardColors="False"
-                                  SelectedColor="{Binding Theme.SelectionFillColor, Mode=TwoWay}" HorizontalAlignment="Left" />
-
-                                <TextBlock Grid.Row="5" Text="Rows: " />
-                                <xctk:IntegerUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="20"
-                                    Value="{Binding Theme.NbItemsPerColumn, Mode=TwoWay}" HorizontalAlignment="Left" />
-                                <TextBlock Grid.Row="6" Text="Columns: " />
-                                <xctk:IntegerUpDown Grid.Row="6" Grid.Column="1" Minimum="0" Maximum="20"
-                                    Value="{Binding Theme.NbItemsPerRow, Mode=TwoWay}" HorizontalAlignment="Left" />
+                                <TextBlock Grid.Row="2" Text="{Binding Theme.NbItemsPerRow, StringFormat={}Columns: {0}}" />
+                                <Slider Grid.Row="2" Grid.Column="1" Minimum="2" Maximum="20" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="Both" Value="{Binding Theme.NbItemsPerRow, Mode=TwoWay}" />
 
                             </Grid>
                         </TabItem>

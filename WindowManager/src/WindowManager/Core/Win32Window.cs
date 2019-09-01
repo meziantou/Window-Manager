@@ -10,6 +10,7 @@ namespace WindowManager.Core
 {
     public sealed class Win32Window
     {
+        private const byte TransparencyInterval = 15;
         private static readonly double[] _splits = new[] { 0.0, 1.0 / 4.0, 1.0 / 3.0, 2.0 / 4.0, 2.0 / 3.0, 3.0 / 4.0, 1.0 };
 
         public Win32Window(IntPtr handle)
@@ -129,18 +130,18 @@ namespace WindowManager.Core
         internal void IncreaseTransparency()
         {
             var value = GetCurrentTransparency();
-            if (value > 5)
+            if (value > TransparencyInterval)
             {
-                SetTransparency((byte)(value - 5));
+                SetTransparency((byte)(value - TransparencyInterval));
             }
         }
 
         internal void DecreaseTransparency()
         {
             var value = GetCurrentTransparency();
-            if (value < 250)
+            if (value < (255 - TransparencyInterval))
             {
-                value += 5;
+                value += TransparencyInterval;
                 SetTransparency(value);
             }
             else if (value != 255)

@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.5.0" />
     <PackageReference Include="Hardcodet.Wpf.TaskbarNotification" Version="1.0.5" />
     <PackageReference Include="Meziantou.Framework" Version="2.7.4" />
     <PackageReference Include="Meziantou.Framework.SingleInstance" Version="1.0.1" />
