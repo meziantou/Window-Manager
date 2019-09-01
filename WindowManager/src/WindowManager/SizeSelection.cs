@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -10,14 +9,12 @@ using WindowManager.Core.Settings;
 
 namespace WindowManager
 {
-    [Export(typeof(ISizeSelection))]
-    public class SizeSelection : ISizeSelection
+    public sealed class SizeSelection
     {
         private readonly IList<SizeSelectionWindow> _screens = new List<SizeSelectionWindow>();
-        private readonly Settings _settings;
+        private readonly WindowManagerSettings _settings;
 
-        [ImportingConstructor]
-        public SizeSelection([Import("Settings")]Settings settings)
+        public SizeSelection(WindowManagerSettings settings)
         {
             _settings = settings;
         }
@@ -32,8 +29,7 @@ namespace WindowManager
             }
             foreach (Screen screen in Screen.AllScreens)
             {
-                var window = new SizeSelectionWindow(screen, _settings.Theme.NbItemsPerRow,
-                                                                     _settings.Theme.NbItemsPerColumn, _settings);
+                var window = new SizeSelectionWindow(screen, _settings.Theme.NbItemsPerRow, _settings.Theme.NbItemsPerColumn, _settings);
                 window.Show();
                 _screens.Add(window);
             }

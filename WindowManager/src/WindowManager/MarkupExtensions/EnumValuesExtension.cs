@@ -5,7 +5,7 @@ using System.Windows.Markup;
 namespace WindowManager.MarkupExtensions
 {
     [MarkupExtensionReturnType(typeof(object[]))]
-    public class EnumValuesExtension : MarkupExtension
+    public sealed class EnumValuesExtension : MarkupExtension
     {
         public EnumValuesExtension()
         {
@@ -13,7 +13,7 @@ namespace WindowManager.MarkupExtensions
 
         public EnumValuesExtension(Type enumType)
         {
-            this.EnumType = enumType;
+            EnumType = enumType;
         }
 
         [ConstructorArgument("enumType")]
@@ -23,13 +23,14 @@ namespace WindowManager.MarkupExtensions
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (this.EnumType == null)
-                throw new ArgumentException("The enum type is not set");
-            var values = Enum.GetValues(this.EnumType);
+            if (EnumType == null)
+                throw new InvalidOperationException("The enum type is not set");
+
+            var values = Enum.GetValues(EnumType);
             if (SortByName)
             {
                 var list = values.Cast<Enum>().ToList();
-                list.Sort((a, b) => String.CompareOrdinal(a.ToString(), b.ToString()));
+                list.Sort((a, b) => string.CompareOrdinal(a.ToString(), b.ToString()));
                 return list;
             }
 

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace WindowManager.Converters
 {
-    public class MultiValueEnumConverter : IValueConverter
+    public sealed class MultiValueEnumConverter : IValueConverter
     {
         private ulong _value;
 

@@ -2,7 +2,7 @@ using System.Windows.Threading;
 
 namespace WindowManager
 {
-    public static class WpfHelpers
+    internal static class WpfHelpers
     {
         private static readonly DispatcherOperationCallback ExitFrameCallback = ExitFrame;
 

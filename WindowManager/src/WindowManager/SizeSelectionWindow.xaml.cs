@@ -15,17 +15,17 @@ namespace WindowManager
     /// <summary>
     ///   Interaction logic for SizeSelectionWindow.xaml
     /// </summary>
-    public partial class SizeSelectionWindow : Window
+    public sealed partial class SizeSelectionWindow : Window
     {
         private readonly int _nbItemsPerRow = 10;
         private readonly int _nbItemsPerColumn = 10;
-        private readonly Settings _settings;
+        private readonly WindowManagerSettings _settings;
         private readonly Screen _screen;
         public event SizeSelectedEventHandler SizeSelected;
         private Point _startPoint;
         private readonly List<ScreenItem> _screenItems;
 
-        public SizeSelectionWindow(Screen screen, int nbItemsPerRow, int nbItemsPerColumn, Settings settings)
+        public SizeSelectionWindow(Screen screen, int nbItemsPerRow, int nbItemsPerColumn, WindowManagerSettings settings)
         {
             _screen = screen;
             _nbItemsPerRow = nbItemsPerRow;
@@ -34,13 +34,15 @@ namespace WindowManager
 
             InitializeComponent();
 
-            this.Resources["foregroundBrush"] = new SolidColorBrush(settings.Theme.ForegroundColor);
-            this.Resources["selectionBorderBrush"] = new SolidColorBrush(settings.Theme.SelectionBorderColor);
-            this.Resources["selectionFillBrush"] = new SolidColorBrush(settings.Theme.SelectionFillColor);
-            this.Background = new SolidColorBrush(settings.Theme.BackgroundColor);
-            var selectionViewModel = new SizeSelectionViewModel();
-            selectionViewModel.NbColumns = NbItemsPerRow;
-            selectionViewModel.NbRows = NbItemsPerColumn;
+            Resources["foregroundBrush"] = new SolidColorBrush(settings.Theme.ForegroundColor);
+            Resources["selectionBorderBrush"] = new SolidColorBrush(settings.Theme.SelectionBorderColor);
+            Resources["selectionFillBrush"] = new SolidColorBrush(settings.Theme.SelectionFillColor);
+            Background = new SolidColorBrush(settings.Theme.BackgroundColor);
+            var selectionViewModel = new SizeSelectionViewModel
+            {
+                NbColumns = NbItemsPerRow,
+                NbRows = NbItemsPerColumn,
+            };
             _screenItems = new List<ScreenItem>();
             for (var position = 0; position < NbItemsPerColumn * NbItemsPerRow; position++)
                 _screenItems.Add(new ScreenItem(screen, position));
@@ -130,7 +132,7 @@ namespace WindowManager
 
             var x = (int)(_screen.WorkingArea.Left + selection.X * widthPerUnit);
             var y = (int)(_screen.WorkingArea.Top + selection.Y * heightPerUnit);
-            var width = (int)((selection.Width) * widthPerUnit);
+            var width = (int)(selection.Width * widthPerUnit);
             var height = (int)(selection.Height * heightPerUnit);
 
             var rect = new Rectangle(x, y, width, height);
@@ -180,7 +182,7 @@ namespace WindowManager
         {
             if (e.Key == Key.Escape)
             {
-                this.Close();
+                Close();
             }
         }
     }

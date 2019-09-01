@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace WindowManager
 {
-    public class SizeSelectionViewModel
+    public sealed class SizeSelectionViewModel
     {
         public int NbColumns { get; set; }
         public int NbRows { get; set; }

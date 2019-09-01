@@ -1,13 +1,10 @@
 using System.Diagnostics.Contracts;
 using System.Windows.Media;
-using System.Xml.Serialization;
 
 namespace WindowManager.Core.Settings
 {
-    public class Theme
+    public sealed class Theme
     {
-        [XmlIgnore]
-        public string Name { get; set; }
         public int NbItemsPerRow { get; set; }
         public int NbItemsPerColumn { get; set; }
         public bool SwitchWindowFullScreen { get; set; }
@@ -20,15 +17,16 @@ namespace WindowManager.Core.Settings
         {
             Contract.Ensures(Contract.Result<Theme>() != null);
 
-            var theme = new Theme();
-            theme.Name = "Default";
-            theme.NbItemsPerRow = 10;
-            theme.NbItemsPerColumn = 10;
-            theme.SwitchWindowFullScreen = false;
-            theme.BackgroundColor = Color.FromArgb(1, 255, 255, 255);
-            theme.ForegroundColor = Color.FromArgb(255, 0, 0, 0);
-            theme.SelectionBorderColor = Color.FromArgb(175, 0, 0, 255);
-            theme.SelectionFillColor = Color.FromArgb(0xA0, 0, 89, 255);
+            var theme = new Theme
+            {
+                NbItemsPerRow = 10,
+                NbItemsPerColumn = 10,
+                SwitchWindowFullScreen = false,
+                BackgroundColor = Color.FromArgb(1, 255, 255, 255),
+                ForegroundColor = Color.FromArgb(255, 0, 0, 0),
+                SelectionBorderColor = Color.FromArgb(175, 0, 0, 255),
+                SelectionFillColor = Color.FromArgb(0xA0, 0, 89, 255),
+            };
 
             return theme;
         }

@@ -1,14 +1,12 @@
-using System.Diagnostics.Contracts;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Xml.Serialization;
 
 namespace WindowManager.Core.Settings
 {
-    public class HotKeys
+    public sealed class HotKeys
     {
-        [XmlIgnore]
-        public string Name { get; set; }
         public HotKey CenterHotKey { get; set; }
         public HotKey HorizontalCenterHotKey { get; set; }
         public HotKey VerticalCenterHotKey { get; set; }
@@ -34,40 +32,52 @@ namespace WindowManager.Core.Settings
         public HotKey ReduceTopHotKey { get; set; }
         public HotKey ReduceLeftHotKey { get; set; }
         public HotKey ReduceRightHotKey { get; set; }
+        public HotKey IncreaseTransparencyHotKey { get; set; }
+        public HotKey DecreaseTransparencyHotKey { get; set; }
 
         public static HotKeys GetDefault()
         {
-            Contract.Ensures(Contract.Result<HotKeys>() != null);
+            var hotKeys = new HotKeys
+            {
+                BottomLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad1),
+                BottomHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad2),
+                BottomRightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad3),
+                LeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad4),
+                RightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad6),
+                TopLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad7),
+                TopHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad8),
+                TopRightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad9),
+                CenterHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad5),
+                HorizontalCenterHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.NumPad4),
+                VerticalCenterHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.NumPad8),
+                TopMostHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.NumPad0),
+                BottomMostHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.NumPad1),
+                ShowSizeSelectionWindowHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.Space),
+                IncreaseTransparencyHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.Subtract),
+                DecreaseTransparencyHotKey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Keys.Add),
 
-            var hotKeys = new HotKeys();
-            hotKeys.Name = "Default";
-            hotKeys.BottomLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad1);
-            hotKeys.BottomHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad2);
-            hotKeys.BottomRightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad3);
-            hotKeys.LeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad4);
-            hotKeys.FullScreenHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad5);
-            hotKeys.RightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad6);
-            hotKeys.TopLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad7);
-            hotKeys.TopHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad8);
-            hotKeys.TopRightHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad9);
-            hotKeys.SwitchScreenHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad0);
-            hotKeys.ShowSizeSelectionWindowHotKey = new HotKey(ModifierKeys.Alt, Keys.Space);
-            hotKeys.HorizontalCenterHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad4);
-            hotKeys.VerticalCenterHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad8);
-            hotKeys.CenterHotKey = new HotKey(ModifierKeys.Windows, Keys.NumPad5);
-            hotKeys.TopMostHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad0);
-            hotKeys.BottomMostHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad1);
-            hotKeys.MinimizeWindowHotKey = new HotKey(ModifierKeys.Alt, Keys.NumPad2);
-            //hotKeys.ExtendBottomHotKey = new HotKey(ModifierKeys.Windows, Keys.Down);
-            //hotKeys.ExtendTopHotKey = new HotKey(ModifierKeys.Windows, Keys.Up);
-            //hotKeys.ExtendLeftHotKey = new HotKey(ModifierKeys.Windows, Keys.Left);
-            //hotKeys.ExtendRightHotKey = new HotKey(ModifierKeys.Windows, Keys.Right);
-            //hotKeys.ReduceBottomHotKey = new HotKey(ModifierKeys.Alt, Keys.Up);
-            //hotKeys.ReduceTopHotKey = new HotKey(ModifierKeys.Alt, Keys.Down);
-            //hotKeys.ReduceLeftHotKey = new HotKey(ModifierKeys.Alt, Keys.Right);
-            //hotKeys.ReduceRightHotKey = new HotKey(ModifierKeys.Alt, Keys.Left);
+                ExtendBottomHotKey = HotKey.None(),
+                ExtendLeftHotKey = HotKey.None(),
+                ExtendRightHotKey = HotKey.None(),
+                ExtendTopHotKey = HotKey.None(),
+                FullScreenHotKey = HotKey.None(),
+                MinimizeWindowHotKey = HotKey.None(),
+                ReduceBottomHotKey = HotKey.None(),
+                ReduceLeftHotKey = HotKey.None(),
+                ReduceRightHotKey = HotKey.None(),
+                ReduceTopHotKey = HotKey.None(),
+                SwitchScreenHotKey = HotKey.None(),
+            };
 
             return hotKeys;
+        }
+
+        public IEnumerable<HotKey> All()
+        {
+            return typeof(HotKeys)
+                .GetProperties()
+                .Where(p => typeof(HotKey).IsAssignableFrom(p.PropertyType))
+                .Select(p => (HotKey)p.GetValue(this));
         }
     }
 }

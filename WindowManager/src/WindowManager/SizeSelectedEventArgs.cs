@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace WindowManager
 {
-    public class SizeSelectedEventArgs : EventArgs
+    public sealed class SizeSelectedEventArgs : EventArgs
     {
         public SizeSelectedEventArgs(Rectangle size, bool maximized)
         {

@@ -1,16 +1,21 @@
 ﻿<RibbonWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:WindowManager="clr-namespace:WindowManager"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:Controls="clr-namespace:WindowManager.Controls"
-                     x:Class="WindowManager.MainWindow" mc:Ignorable="d"
-                     xmlns:TaskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
-                     xmlns:Settings="clr-namespace:WindowManager.Core.Settings" Title="WindowManager" Height="767" Width="737" Icon="/Assets/Logo.ico" StateChanged="RibbonWindowStateChanged">
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:WindowManager="clr-namespace:WindowManager"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:Controls="clr-namespace:WindowManager.Controls"
+              x:Class="WindowManager.MainWindow" mc:Ignorable="d"
+              xmlns:TaskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
+              xmlns:Settings="clr-namespace:WindowManager.Core.Settings" 
+              Title="WindowManager" 
+              Height="767" 
+              Width="737" 
+              Icon="/Assets/Logo.ico" 
+              StateChanged="RibbonWindowStateChanged">
 
     <RibbonWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes/Generic.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </RibbonWindow.Resources>
@@ -18,8 +23,6 @@
     <RibbonWindow.CommandBindings>
         <CommandBinding Command="WindowManager:CustomCommands.Exit" Executed="CloseWindowMenuItemClick" />
         <CommandBinding Command="WindowManager:CustomCommands.ShowWindow" Executed="ShowWindowMenuItemClick" />
-        <CommandBinding Command="WindowManager:CustomCommands.ExportSettings" Executed="ExportSettingsMenuItemClick" />
-        <CommandBinding Command="WindowManager:CustomCommands.ImportSettings" Executed="ImportSettingsMenuItemClick" />
     </RibbonWindow.CommandBindings>
 
     <Grid>
@@ -58,39 +61,6 @@
                     <RibbonButton LargeImageSource="/Assets/Undo.png" Label="Reset" Click="ResetClick" />
                     <RibbonButton LargeImageSource="/Assets/Delete.png" Label="Default Configuration"
                                Click="DefaultSettingsClick" />
-                </RibbonGroup>
-                <RibbonGroup Header="Profile">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="HotKeys: " />
-                        <TextBlock Grid.Row="1" Text="Theme: " />
-
-                        <ComboBox Grid.Column="1" x:Name="_hotKeysComboBox" SelectionChanged="HotKeysChanged"
-                      x:FieldModifier="private" />
-                        <ComboBox Grid.Column="1" Grid.Row="1" x:Name="_themeComboBox" SelectionChanged="ThemeChanged"
-                      x:FieldModifier="private" />
-
-                        <RibbonButton Grid.Column="2" SmallImageSource="/Assets/Add.png"
-                                 Click="CreateHotkeys" />
-                        <RibbonButton Grid.Column="3" SmallImageSource="/Assets/Delete.png"
-                                 Click="DeleteHotKeys" />
-
-                        <RibbonButton Grid.Row="1" Grid.Column="2" SmallImageSource="/Assets/Add.png"
-                                 Click="CreateTheme" />
-                        <RibbonButton Grid.Row="1" Grid.Column="3" SmallImageSource="/Assets/Delete.png"
-                                 Click="DeleteTheme" />
-                    </Grid>
-
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="About">
@@ -133,8 +103,7 @@
         <Grid Grid.Row="1">
 
             <Border>
-                <Grid x:Name="_settingsGrid" x:FieldModifier="private"
-              d:DataContext="{d:DesignInstance Type={x:Type Settings:Settings}}">
+                <Grid x:Name="_settingsGrid" x:FieldModifier="private" d:DataContext="{d:DesignInstance Type={x:Type Settings:WindowManagerSettings}}">
 
                     <Grid.Resources>
                         <Style TargetType="{x:Type CheckBox}">
@@ -176,6 +145,8 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -278,7 +249,7 @@
                                     <TextBlock Grid.Row="18" Text="Extend Top: " />
                                     <Controls:HotKeyControl Grid.Row="18" Grid.Column="1"
                                         HotKey="{Binding HotKeys.ExtendTopHotKey, Mode=TwoWay}" />
-                                    
+
                                     <TextBlock Grid.Row="19" Text="Extend Bottom: " />
                                     <Controls:HotKeyControl Grid.Row="19" Grid.Column="1"
                                         HotKey="{Binding HotKeys.ExtendBottomHotKey, Mode=TwoWay}" />
@@ -299,6 +270,13 @@
                                     <Controls:HotKeyControl Grid.Row="23" Grid.Column="1"
                                         HotKey="{Binding HotKeys.ReduceBottomHotKey, Mode=TwoWay}" />
 
+                                    <TextBlock Grid.Row="24" Text="Increase transparency: " />
+                                    <Controls:HotKeyControl Grid.Row="24" Grid.Column="1"
+                                        HotKey="{Binding HotKeys.IncreaseTransparencyHotKey, Mode=TwoWay}" />
+
+                                    <TextBlock Grid.Row="25" Text="Decrease transparency: " />
+                                    <Controls:HotKeyControl Grid.Row="25" Grid.Column="1"
+                                        HotKey="{Binding HotKeys.DecreaseTransparencyHotKey, Mode=TwoWay}" />
                                 </Grid>
                             </ScrollViewer>
                         </TabItem>

@@ -1,34 +1,34 @@
+using Meziantou.Framework;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows;
+using System.Windows.Forms;
 using WindowManager.Core.NativeMethods;
 
 namespace WindowManager.Core
 {
-    public class Win32Window : IEquatable<Win32Window>
+    public sealed class Win32Window
     {
-        private const int TransparencyPercentId = 1000;
-        private readonly IntPtr _handle;
-        private int? _originalWindowLongExStyle;
-        private IntPtr _transparencyMenuHandle;
-        private const int DefaultTransparencyMenuId = 1000;
+        private static readonly double[] _splits = new[] { 0.0, 1.0 / 4.0, 1.0 / 3.0, 2.0 / 4.0, 2.0 / 3.0, 3.0 / 4.0, 1.0 };
 
         public Win32Window(IntPtr handle)
         {
             if (handle == IntPtr.Zero)
-                throw new ArgumentException("handle must valid", "handle");
-            _handle = handle;
+                throw new ArgumentException("handle must valid", nameof(handle));
+            Handle = handle;
         }
 
         public static Win32Window GetForegroundWindow()
         {
             IntPtr foregroundWindow = User32.GetForegroundWindow();
+            if (foregroundWindow == IntPtr.Zero)
+                return null;
+
             return new Win32Window(foregroundWindow);
         }
 
-        public IntPtr Handle => _handle;
+        public IntPtr Handle { get; }
 
         public Rectangle Rectangle
         {
@@ -79,7 +79,7 @@ namespace WindowManager.Core
                         User32.ShowWindowMaximized(Handle);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException("value");
+                        throw new ArgumentOutOfRangeException(nameof(value));
                 }
             }
         }
@@ -102,117 +102,554 @@ namespace WindowManager.Core
             User32.ShowWindowBottom(Handle);
         }
 
-        public void BringToFront()
-        {
-            User32.ShowWindow(Handle);
-        }
-
         public void SetTransparency(byte transparency)
         {
-            if (_originalWindowLongExStyle == null)
-                _originalWindowLongExStyle = User32.GetWindowLong(Handle, User32.WindowLongs.GWL_EXSTYLE);
+            var currentAttributes = User32.GetWindowLong(Handle, User32.WindowLongs.GWL_EXSTYLE);
+            if (!currentAttributes.HasFlag(User32.WindowStyle.WS_EX_LAYERED))
+            {
+                User32.SetWindowLong(Handle, (int)User32.WindowLongs.GWL_EXSTYLE, currentAttributes | User32.WindowStyle.WS_EX_LAYERED);
+            }
 
-            User32.SetWindowLong(Handle, (int)User32.WindowLongs.GWL_EXSTYLE, User32.GetWindowLong(Handle, User32.WindowLongs.GWL_EXSTYLE) ^ (int)User32.WindowStyle.WS_EX_LAYERED);
-            User32.SetLayeredWindowAttributes(Handle, 0, transparency, (int)User32.LayeredWindowAttributes.LWA_ALPHA);
+            User32.SetLayeredWindowAttributes(Handle, 0, transparency, User32.LayeredWindowAttributes.LWA_ALPHA);
         }
 
-        public void ClearTransparency()
+        private byte GetCurrentTransparency()
         {
-            if (_originalWindowLongExStyle != null)
-                User32.SetWindowLong(Handle, (int)User32.WindowLongs.GWL_EXSTYLE, _originalWindowLongExStyle.Value);
+            var currentAttributes = User32.GetWindowLong(Handle, User32.WindowLongs.GWL_EXSTYLE);
+            if (!currentAttributes.HasFlag(User32.WindowStyle.WS_EX_LAYERED))
+            {
+                // The window is not transparent
+                return 255;
+            }
+
+            User32.GetLayeredWindowAttributes(Handle, out _, out var alpha, out _);
+            return alpha;
         }
 
-        /// <summary>
-        /// Indicates whether the current object is equal to another object of the same type.
-        /// </summary>
-        /// <returns>
-        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-        /// </returns>
-        /// <param name="other">An object to compare with this object.</param>
-        public bool Equals(Win32Window other)
+        internal void IncreaseTransparency()
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return other._handle.Equals(_handle);
+            var value = GetCurrentTransparency();
+            if (value > 5)
+            {
+                SetTransparency((byte)(value - 5));
+            }
         }
 
-        /// <summary>
-        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
-        /// </summary>
-        /// <returns>
-        /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
-        /// </returns>
-        /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception><filterpriority>2</filterpriority>
-        public override bool Equals(object obj)
+        internal void DecreaseTransparency()
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Win32Window)) return false;
-            return Equals((Win32Window)obj);
-        }
-
-        public static bool operator ==(Win32Window left, Win32Window right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Win32Window left, Win32Window right)
-        {
-            return !Equals(left, right);
-        }
-
-        public override int GetHashCode()
-        {
-            return _handle.GetHashCode();
-        }
-
-        public void RemoveTransparencyMenu()
-        {
-            // This function removes the Transparency menu we added to the system menu.
-            IntPtr windowMenuHandle = User32.GetSystemMenu(Handle, false);
-            var index = User32.GetMenuItemCount(windowMenuHandle);
-            User32.RemoveMenu(windowMenuHandle, index - 3, (int)User32.Menu.MF_BYPOSITION);
-            User32.RemoveMenu(windowMenuHandle, index - 3, (int)User32.Menu.MF_BYPOSITION);
-
-            User32.DestroyMenu(_transparencyMenuHandle);
-
-        }
-
-        public void AddTransparencyMenu()
-        {
-            Trace.WriteLine("Add Transparency on Window: " + this.ToString());
-            //HwndSource source = HwndSource.FromHwnd(Handle);
-            //if (source != null)
-            //{
-            //    Trace.WriteLine("Add HwndSource Hook on Window: " + this.ToString());
-            //    source.AddHook(WndProc);
-            //}
-
-
-
-            // This gets a handle to the system menu for a window. Once we have that handle, we can add our
-            // own menu items.
-            IntPtr windowMenuHandle = User32.GetSystemMenu(Handle, false);
-            var index = User32.GetMenuItemCount(windowMenuHandle);
-
-            _transparencyMenuHandle = User32.CreateMenu();
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 100, "100%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 95, "95%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 90, "90%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 85, "85%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 80, "80%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 75, "75%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, TransparencyPercentId + 70, "70%");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)(User32.Menu.MF_BYPOSITION | User32.Menu.MF_SEPARATOR), 0, "");
-            User32.InsertMenu(_transparencyMenuHandle, -1, (int)User32.Menu.MF_BYPOSITION, DefaultTransparencyMenuId, "Default Transparency");
-
-            User32.InsertMenu(windowMenuHandle, index - 2, (int)(User32.Menu.MF_BYPOSITION | User32.Menu.MF_POPUP), _transparencyMenuHandle, "Transparency");
-            User32.InsertMenu(_transparencyMenuHandle, -2, (int)(User32.Menu.MF_BYPOSITION | User32.Menu.MF_SEPARATOR), 0, "");
+            var value = GetCurrentTransparency();
+            if (value < 250)
+            {
+                value += 5;
+                SetTransparency(value);
+            }
+            else if (value != 255)
+            {
+                value = 255;
+                SetTransparency(value);
+            }
         }
 
         public override string ToString()
         {
             return WindowText;
+        }
+
+        public void ReduceBottom()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var minimumSize = screen.Height / 4;
+
+            if (placement.Height <= minimumSize)
+                return;
+
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, placement.Height);
+
+            var x = placement.X;
+            var y = placement.Y;
+            var width = placement.Width;
+            var height = size;
+
+            if (height < minimumSize)
+                height = minimumSize;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ReduceTop()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var minimumSize = screen.Height / 4;
+
+
+            if (placement.Height <= minimumSize)
+                return;
+
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, 0);
+
+            var x = placement.X;
+            var y = placement.Y + size;
+            var width = placement.Width;
+            var height = placement.Height - size;
+
+            if (height < minimumSize)
+                height = minimumSize;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ReduceRight()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var minimumSize = screen.Width / 4;
+
+            if (placement.Width <= minimumSize)
+                return;
+
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MaximumValueLessThan(sizes, placement.Width);
+
+            var x = placement.X;
+            var y = placement.Y;
+            var width = size;
+            var height = placement.Height;
+
+            if (width < minimumSize)
+            {
+                width = minimumSize;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ReduceLeft()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var minimumSize = screen.Width / 4;
+
+            if (placement.Width <= minimumSize)
+                return;
+
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MinimumValueGreaterThan(sizes, 0);
+
+
+            var x = placement.X + size;
+            var y = placement.Y;
+            var width = placement.Width - size;
+            var height = placement.Height;
+
+            if (width < minimumSize)
+            {
+                width = minimumSize;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+
+        public void ExtendBottom()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MinimumValueGreaterThan(sizes, placement.Height);
+
+            var x = placement.X;
+            var y = placement.Y;
+            var width = placement.Width;
+            var height = size;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ExtendTop()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var sizes = ComputeArray(screen.Y, screen.Height, placement.Y);
+            var size = MaximumValueLessThan(sizes, 0);
+
+            var x = placement.X;
+            var y = placement.Y + size;
+            var width = placement.Width;
+            var height = placement.Height - size;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ExtendLeft()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MaximumValueLessThan(sizes, 0);
+
+            var x = placement.X + size;
+            var y = placement.Y;
+            var width = placement.Width - size;
+            var height = placement.Height;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void ExtendRight()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var sizes = ComputeArray(screen.X, screen.Width, placement.X);
+            var size = MinimumValueGreaterThan(sizes, placement.Width);
+
+            var x = placement.X;
+            var y = placement.Y;
+            var width = size;
+            var height = placement.Height;
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void MinimizeWindow()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Minimized;
+            }
+        }
+
+        public void SendToCenterHotKeyPressed()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X + screen.Width / 4;
+            var y = screen.Y + screen.Height / 4;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                x = screen.X + screen.Width / 3;
+                y = screen.Y + screen.Height / 3;
+                width = screen.Width / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToHorizontalCenterHotKeyPressed()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 4;
+            var width = screen.Width;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                y = screen.Y + screen.Height / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToVerticalCenterHotKeyPressed()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X + screen.Width / 4;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                x = screen.X + screen.Width / 3;
+                width = screen.Width / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SwitchScreen()
+        {
+            var screen = Screen.FromHandle(Handle);
+            var screens = Screen.AllScreens;
+            var index = screens.IndexOf(screen) + 1;
+            Screen newScreen = screens.Length == index ? screens[0] : screens[index];
+
+            var ratioX = (double)newScreen.WorkingArea.Width / screen.WorkingArea.Width;
+            var ratioY = (double)newScreen.WorkingArea.Height / screen.WorkingArea.Height;
+
+            var maximized = WindowState == WindowState.Maximized;
+            Rectangle placement = Rectangle;
+            var x = (int)((placement.X - screen.WorkingArea.X) * ratioX + newScreen.WorkingArea.X);
+            var y = (int)((placement.Y - screen.WorkingArea.Y) * ratioY + newScreen.WorkingArea.Y);
+            var width = (int)(placement.Width * ratioX);
+            var height = (int)(placement.Height * ratioY);
+
+            SetWindowPosition(x, y, width, height);
+
+            if (maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+
+        public void BottomMost()
+        {
+            SendToBack();
+        }
+
+        public void SwitchIsTopMost()
+        {
+            IsTopMost = !IsTopMost;
+        }
+
+        public void SendToBottomLeft()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                y = screen.Y + 2 * screen.Height / 3;
+                width = screen.Width / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToFull(bool maximize)
+        {
+            Rectangle screen = GetScreen();
+
+            var maximized = WindowState == WindowState.Maximized;
+            if (maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                if (maximize)
+                {
+                    WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    var x = screen.X;
+                    var y = screen.Y;
+                    var width = screen.Width;
+                    var height = screen.Height;
+                    SetWindowPosition(x, y, width, height);
+                }
+            }
+        }
+
+        public void SendToTopLeft()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                width = screen.Width / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToBottomRight()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                x = screen.X + 2 * screen.Width / 3;
+                y = screen.Y + 2 * screen.Height / 3;
+                width = screen.Width / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToTopRight()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                x = screen.X + 2 * screen.Width / 3;
+                width = screen.Width / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToTop()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToBottom()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y + screen.Height / 2;
+            var width = screen.Width;
+            var height = screen.Height / 2;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                y = screen.Y + 2 * screen.Height / 3;
+                height = screen.Height / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToLeft()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                width = screen.Width / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        public void SendToRight()
+        {
+            Rectangle screen = GetScreen();
+            Rectangle placement = Rectangle;
+
+            var x = screen.X + screen.Width / 2;
+            var y = screen.Y;
+            var width = screen.Width / 2;
+            var height = screen.Height;
+
+            if (placement.X == x && placement.Y == y && placement.Width == width && placement.Height == height)
+            {
+                x = screen.X + 2 * screen.Width / 3;
+                width = screen.Width / 3;
+            }
+
+            SetWindowPosition(x, y, width, height);
+        }
+
+        private static int[] ComputeArray(int origin, int size, int position)
+        {
+            var sizes = new int[_splits.Length];
+            for (var i = 0; i < _splits.Length; i++)
+            {
+                sizes[i] = (int)(origin + size * _splits[i] - position);
+            }
+
+            return sizes;
+        }
+
+        private void SetWindowPosition(int x, int y, int width, int height)
+        {
+            WindowState = WindowState.Normal;
+            Rectangle = new Rectangle(x, y, width, height);
+        }
+
+        private Rectangle GetScreen()
+        {
+            return Screen.FromHandle(Handle).WorkingArea;
+        }
+
+        private static int MinimumValueGreaterThan(int[] size, int height)
+        {
+            for (var i = 0; i < size.Length; i++)
+            {
+                if (size[i] > height)
+                    return size[i];
+            }
+
+            return size[size.Length - 1];
+        }
+
+        private static int MaximumValueLessThan(int[] size, int height)
+        {
+            for (var i = size.Length - 1; i >= 0; i--)
+            {
+                if (size[i] < height)
+                    return size[i];
+            }
+
+            return size[0];
         }
     }
 }

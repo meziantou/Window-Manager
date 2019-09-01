@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace WindowManager
 {
-    public class ScreenItem : INotifyPropertyChanged
+    public sealed class ScreenItem : INotifyPropertyChanged
     {
         public ScreenItem(Screen screen, int position)
         {
