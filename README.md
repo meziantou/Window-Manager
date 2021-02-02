@@ -1,6 +1,26 @@
-# Window-Manager
+# Window Manager
 
-You have many windows and some difficulties in positioning them, WindowManager is made for you.
+`Window Manager` allows easy placement of windows. Press <kbd>Windows + NumPad</kbd> to move the active window using the keyboard.
+If you need a more specific placement it is possible to use a virtual grid representing the complete screen.
+Simply select the desired area in this grid so that the window is moved and resized. Window Manager also allows you to change the transparency of a window and to set it to always stay on top.
 
-Window Manager lets you move the active window to any side or corner of your screen. Simply use the shortcut Win+Num pad (this is of course editable). If you have multiple screens you can move the foreground window to your next screen. If your screens don't have the same resolution, the window will be resized.
-If you need, you can position the active window more finely by selecting the position directly on a virtual grid (alt+space which is also editable).
+It is therefore easy to create the following layout:
+
+![WindowManager](img/WindowManager.png)
+
+Select the zone you want in the virtual grid (<kbd>Windows + Alt + Space</kbd>):
+
+![](img/WindowManagerSelection.png)
+
+You can change the transparency of a window (<kbd>Windows + Alt + -/+</kbd>):
+
+![WindowManager - Transparency](img/WindowManagerTransparency.png)
+
+The hotkeys are fully configurable:
+
+![WindowManager - Hotkey configuration](img/WindowManagerHotkeys.png)
+
+They talked about Window Manager:
+
+- [AddictiveTips - Position Multiple Windows On A Large Screen In Different Sizes](https://www.addictivetips.com/windows-tips/position-multiple-windows-on-a-large-screen-in-different-sizes/)
+- [Impress - テンキーで直感的に移動できるウィンドウ配置支援ソフト「Window Manager」](https://forest.watch.impress.co.jp/docs/review/575566.html)
